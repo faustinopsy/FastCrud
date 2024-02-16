@@ -24,3 +24,14 @@ def execute_query(connection, query):
         print("Query successful")
     except Error as err:
         print(f"Error: '{err}'")
+
+
+'''
+CREATE TABLE items (
+    id VARCHAR(36) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2) NOT NULL,
+    on_offer BOOLEAN DEFAULT FALSE
+);
+'''

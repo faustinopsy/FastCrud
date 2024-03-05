@@ -56,6 +56,10 @@ button{
 body.modal-open {
     overflow: hidden;
 }
+.close{
+    margin-left: 400px;
+}
+
 input[type=text],[type=number] {
     width: 100%;
     padding: 12px 20px;

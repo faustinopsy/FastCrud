@@ -49,6 +49,7 @@ class App {
             document.querySelector(`.item[data-id='${item.id}']`).addEventListener('click', () => {
                 this.openUpdateModal(item);
             });
+           
         });
     }
     
@@ -64,6 +65,7 @@ class App {
         const modal = document.getElementById('updateItemModal');
         modal.style.display = 'block';
     }
+    
     render(elementId, html) {
         const element = document.getElementById(elementId);
         if (element) {
@@ -79,9 +81,3 @@ class App {
 
 const apiBaseUrl = 'http://127.0.0.1:8000'; 
 const itemManager = new App(apiBaseUrl);
-window.addEventListener('click', function(event) {
-    const modal = document.getElementById('updateItemModal');
-    if (event.target === modal) {
-        modal.style.display = 'none';
-    }
-});

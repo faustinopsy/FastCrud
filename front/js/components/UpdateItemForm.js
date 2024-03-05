@@ -7,7 +7,7 @@ class UpdateItemForm {
     render() {
         return `
         <div id="updateItemModal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content"><div class="close"> X </div>
             <h4>Atualizar Item</h4>
             <div class="input-field">
                 <label for="updateId">ID para atualizar</label>
@@ -39,10 +39,15 @@ class UpdateItemForm {
     
         `;
     }
-
+    closeModal(){
+        const modal = document.getElementById('updateItemModal');
+        modal.style.display = 'none';
+    }
     afterRender() {   
         document.getElementById('updateButton').addEventListener('click', () => this.updateItem());
+        document.querySelector('.close').addEventListener('click', () => this.closeModal());
     }
+
     async updateItem() {
         const id = document.getElementById('updateId').value;
         const name = document.getElementById('updateName').value;

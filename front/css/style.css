@@ -58,6 +58,7 @@ body.modal-open {
 }
 .close{
     margin-left: 400px;
+    cursor: pointer;
 }
 
 input[type=text],[type=number] {

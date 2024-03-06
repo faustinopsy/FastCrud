@@ -51,6 +51,6 @@ def delete_item(item_id: str) -> dict:
     items = [item for item in items if item.id != item_id]
     if len(items) < len(_load_items()):
         _save_items(items)
-        return {"message": "Item deleted successfully"}
+        return {"message": "Item excluido com sucesso"}
     else:
-        return {"message": "Item not found or could not be deleted"}
+        return {"message": "Item não encontrado, não poderá excluir"}

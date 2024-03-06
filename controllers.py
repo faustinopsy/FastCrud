@@ -1,47 +1,56 @@
-from db import create_server_connection, execute_query
-from models import Item
+from typing import List, Optional
+from pydantic import BaseModel, ValidationError
 import uuid
+import json
 
-connection = create_server_connection("localhost", "root", "root123", "fastcrud")
 
-def create_item(item: Item):
-    item.id = str(uuid.uuid4())
-    query = """
-    INSERT INTO items (id, name, description, price, on_offer) 
-    VALUES (%s, %s, %s, %s, %s);
-    """
-    vals = (item.id, item.name, item.description, item.price, item.on_offer)
-    execute_query(connection, query, vals)
-    return item
+class Item(BaseModel):
+    id: Optional[str] = None
+    name: str
+    description: Optional[str] = None
+    price: float
+    on_offer: bool = False
 
-def get_all_items():
-    cursor = connection.cursor(dictionary=True)
-    query = "SELECT * FROM items;"
-    cursor.execute(query)
-    result = cursor.fetchall()
-    return result
 
-def update_item(item_id: str, item: Item):
-    query = """
-    UPDATE items 
-    SET name = %s, description = %s, price = %s, on_offer = %s 
-    WHERE id = %s;
-    """
-    vals = (item.name, item.description, item.price, item.on_offer, item_id)
-    execute_query(connection, query, vals)
-    return item
-
-def delete_item(item_id: str):
-    query = "DELETE FROM items WHERE id = %s;"
-    vals = (item_id,)
-    execute_query(connection, query, vals)
-    return {"message": "Item deleted successfully"}
-
-def execute_query(connection, query, vals=None):
-    cursor = connection.cursor()
+def _load_items() -> List[Item]:
     try:
-        cursor.execute(query, vals)
-        connection.commit()
-        print("Query successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+        with open("items_db.txt", "r") as file:
+            return [Item.parse_raw(line) for line in file]
+    except FileNotFoundError:
+        return []
+
+
+def _save_items(items: List[Item]):
+    with open("items_db.txt", "w") as file:
+        for item in items:
+            file.write(f"{item.json()}\n")
+
+
+def create_item(item: Item) -> Item:
+    item.id = str(uuid.uuid4())  
+    items = _load_items()
+    items.append(item)
+    _save_items(items)
+    return item
+
+def get_all_items() -> List[Item]:
+    return _load_items()
+
+def update_item(item_id: str, updated_item: Item) -> Optional[Item]:
+    items = _load_items()
+    for i, item in enumerate(items):
+        if item.id == item_id:
+            updated_item.id = item_id  
+            items[i] = updated_item
+            _save_items(items)
+            return updated_item
+    return None
+
+def delete_item(item_id: str) -> dict:
+    items = _load_items()
+    items = [item for item in items if item.id != item_id]
+    if len(items) < len(_load_items()):
+        _save_items(items)
+        return {"message": "Item deleted successfully"}
+    else:
+        return {"message": "Item not found or could not be deleted"}

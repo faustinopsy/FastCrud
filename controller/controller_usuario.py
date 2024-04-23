@@ -1,6 +1,8 @@
 from model.model_usuario import UsuarioCreate, UsuarioUpdate
 from database.database_strategy import Database
 import hashlib
+from controller.token import Token
+from datetime import datetime, timedelta
 
 class UsuarioController:
     def __init__(self, database: Database):
@@ -22,9 +24,12 @@ class UsuarioController:
         return self.db.listar_usuario_por_email(email)
     
     def login(self, email: str, senha: str) -> bool:
+        jwt_token = Token()  
         usuario = self.listar_usuario_por_email(email)
         if usuario:
             senha_armazenada = usuario.get('senha')
             senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
-            return senha_armazenada == senha_criptografada
+            if senha_armazenada == senha_criptografada:
+                jwt = jwt_token.gerar_token(email) 
+                return [True ,jwt]
         return False

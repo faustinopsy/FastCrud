@@ -1,8 +1,8 @@
 # main.py
 
 from fastapi import FastAPI, HTTPException
-from model.models import UsuarioCreate, UsuarioUpdate
-from controller.controllers import UsuarioController
+from model.model_usuario import UsuarioCreate, UsuarioUpdate
+from controller.controller_usuario import UsuarioController
 from config.helper import add_cors
 
 app = FastAPI()

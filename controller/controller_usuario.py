@@ -1,5 +1,5 @@
-from model.models import UsuarioCreate, UsuarioUpdate
-from database.db import Database
+from model.model_usuario import UsuarioCreate, UsuarioUpdate
+from database.db_mongo import Database
 
 class UsuarioController:
     def __init__(self):

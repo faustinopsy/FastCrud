@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import hashlib
 from database.database_strategy import Database
+import uuid
 
 class MongoDB(Database):
     def __init__(self):
@@ -12,6 +13,7 @@ class MongoDB(Database):
         return hashlib.sha256(password.encode()).hexdigest()
 
     def criar_usuario(self, usuario_data):
+        usuario_data.id = str(uuid.uuid4())
         usuario = usuario_data.dict()
         usuario['senha'] = self._hash_password(usuario['senha'])
         self.collection.insert_one(usuario)
@@ -31,6 +33,7 @@ class MongoDB(Database):
 
     def editar_usuario_por_email(self, email, usuario_data):
         novo_usuario = usuario_data.dict()
+        novo_usuario['senha'] = self._hash_password(novo_usuario['senha'])
         self.collection.update_one({'email': email}, {'$set': novo_usuario})
 
     def excluir_usuario_por_email(self, email):

@@ -7,8 +7,8 @@ from urllib.parse import unquote
 
 router = APIRouter()
 
-db = MySQL()
-#db = MongoDB()
+#db = MySQL()
+db = MongoDB()
 
 controller = UsuarioController(db)
 

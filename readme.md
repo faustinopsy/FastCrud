@@ -5,6 +5,36 @@ Este é um exemplo de aplicação CRUD (Create, Read, Update, Delete) usando o f
 CRUD completo para manipulação de usuários.
 Suporte para MySQL e MongoDB como bancos de dados subjacentes.
 Uso do padrão Strategy para alternar entre os bancos de dados.
+no arquivo controller_usuario tem a linha abaixo que poderá alterar o banco de dados a ser utilizado, 
+e dentro de cada classe do banco precisa´ra colocar todos os métodos a serem manipulados no banco de dados para cada entidade do banco, o modelo poderá ser melhorado para deixar mais genérica isso deixo como desafio para quem quiser usar..
+outro recurso aqui é o token JWT ao realizar o login receberá o token que o forntend precisa armazenar para reenviar nas requisições, as requisições até o momento são listar_usuarios e verificar token para realizar a validação.
+
+```
+#db = MySQL()
+db = MongoDB()
+
+```
+se for utilizado o MySQL use a tabela:
+
+```
+CREATE TABLE `usuarios` (
+  `id` varchar(50) NOT NULL,
+  `nome` varchar(45) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  `senha` text,
+  PRIMARY KEY (`id`)
+)
+
+```
+
+sobre o token jwt, toda a lógica esta encapsulada no arquivo token.py dentro do diretorio controller, e para proteger uma rota adicione a dependência
+
+```
+@router.get("/usuarios/", dependencies=[Depends(verificar_token)])
+def listar_usuarios():
+    return controller.listar_usuarios()
+```
+
 ## Requisitos
 - Python 3.x
 - FastAPI

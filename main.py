@@ -1,21 +1,11 @@
 from fastapi import FastAPI
-from models import Item
-from controllers import create_item, get_all_items, update_item, delete_item
-from fastapi.middleware.cors import CORSMiddleware
+from model.model_item import Item
+from controller.controller_item import create_item, get_all_items, update_item, delete_item
+from config.helper import add_cors
 
 app = FastAPI()
-origins = [
-    "http://localhost:966",  
-    "http://localhost:8000",
-]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,  
-    allow_credentials=True,
-    allow_methods=["*"],  
-    allow_headers=["*"],  
-)
+add_cors(app)
 
 @app.post("/items/")
 def add_item(item: Item):

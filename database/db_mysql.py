@@ -1,37 +1,70 @@
 import mysql.connector
 from mysql.connector import Error
+from database.database_strategy import Database
+from model.model_usuario import UsuarioCreate, UsuarioUpdate
 
-def create_server_connection(host_name, user_name, user_password, db_name):
-    connection = None
-    try:
-        connection = mysql.connector.connect(
-            host=host_name,
-            user=user_name,
-            passwd=user_password,
-            database=db_name
-        )
-        print("MySQL Database connection successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+class MySQL(Database):
+    def __init__(self):
+        self.host = "localhost"
+        self.user = "root"
+        self.password = "root"
+        self.database = "fastcrud"
+        self.connection = self.create_server_connection()
 
-    return connection
+    def create_server_connection(self):
+        try:
+            connection = mysql.connector.connect(
+                host=self.host,
+                user=self.user,
+                passwd=self.password,
+                database=self.database
+            )
+            print("MySQL Database connection successful")
+            return connection
+        except Error as err:
+            print(f"Error: '{err}'")
 
-def execute_query(connection, query):
-    cursor = connection.cursor()
-    try:
+    def criar_usuario(self, usuario_data: UsuarioCreate):
+        query = """
+        INSERT INTO usuarios (id, nome, senha, email) 
+        VALUES (%s, %s, %s, %s);
+        """
+        vals = (usuario_data.id, usuario_data.nome, usuario_data.senha, usuario_data.email)
+        self.execute_query(self.connection, query, vals)
+        return usuario_data
+
+    def listar_usuarios(self):
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM usuarios;"
         cursor.execute(query)
-        connection.commit()
-        print("Query successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+        result = cursor.fetchall()
+        return result
 
 
-'''
-CREATE TABLE items (
-    id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2) NOT NULL,
-    on_offer BOOLEAN DEFAULT FALSE
-);
-'''
+    def editar_usuario_por_email(self, email: str, usuario_data: UsuarioUpdate):
+        query = """
+        UPDATE usuarios 
+        SET nome = %s, senha = %s 
+        WHERE email = %s;
+        """
+        vals = (usuario_data.nome, usuario_data.senha, email)
+        self.execute_query(self.connection, query, vals)
+
+    def excluir_usuario_por_email(self, email: str):
+        query = "DELETE FROM usuarios WHERE email = %s;"
+        vals = (email,)
+        self.execute_query(self.connection, query, vals)
+
+    def listar_usuario_por_email(self, email: str):
+        query = "SELECT * FROM usuarios WHERE email = %s;"
+        vals = (email,)
+        return self.execute_query(self.connection, query, vals)
+
+    def execute_query(self, connection, query, vals=None):
+        cursor = connection.cursor()
+        try:
+            cursor.execute(query, vals)
+            connection.commit()
+            print("Query successful")
+        except Error as err:
+            print(f"Error: '{err}'")

@@ -1,24 +1,13 @@
 from fastapi import FastAPI
-from model.model_item import Item
-from controller.controller_item import create_item, get_all_items, update_item, delete_item
+from router.routes_usuario import router as usuario_router
 from config.helper import add_cors
 
 app = FastAPI()
-
+app = FastAPI(debug=True)
 add_cors(app)
 
-@app.post("/items/")
-def add_item(item: Item):
-    return create_item(item)
+app.include_router(usuario_router, prefix="/usuarios", tags=["usuarios"])
 
-@app.get("/items/")
-def read_items():
-    return get_all_items()
-
-@app.put("/items/{item_id}")
-def update_item_details(item_id: str, item: Item):
-    return update_item(item_id, item)
-
-@app.delete("/items/{item_id}")
-def remove_item(item_id: str):
-    return delete_item(item_id)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)

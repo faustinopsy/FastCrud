@@ -45,7 +45,7 @@ def listar_usuarios():
 ## Instalação
 Clone este repositório:
 ```
-git clone https://github.com/faustinopsy/fastapi-crud.git
+git clone https://github.com/faustinopsy/FastCrud.git
 ```
 
 Navegue até o diretório do projeto:

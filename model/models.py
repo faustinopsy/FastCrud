@@ -8,3 +8,13 @@ class Item(BaseModel):
     description: Optional[str] = None
     price: float
     on_offer: bool = False
+
+
+class UsuarioCreate(BaseModel):
+    nome: str
+    senha: str
+    email: str
+
+class UsuarioUpdate(BaseModel):
+    nome: str
+    senha: str

@@ -1,5 +1,7 @@
 # FastAPI CRUD com MySQL e MongoDB
 Este é um exemplo de aplicação CRUD (Create, Read, Update, Delete) usando o framework FastAPI do Python. O aplicativo é projetado para alternar entre dois bancos de dados diferentes, MySQL e MongoDB, usando o padrão de design Strategy.
+para saber mais sobre o fastAPI: https://fastapi.tiangolo.com/learn/
+um framework python muito poderoso que facilita a criação de rotas e documentação automatica de API
 
 ## Recursos
 CRUD completo para manipulação de usuários.

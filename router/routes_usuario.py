@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException,Depends, status
+from fastapi import APIRouter, HTTPException,Depends, Request
 from model.model_usuario import UsuarioCreate, UsuarioUpdate
 from controller.controller_usuario import UsuarioController
 from datetime import datetime
@@ -38,6 +38,10 @@ def verificar_token(token: str):
         raise HTTPException(status_code=500, detail="Erro ao verificar token")
 
 
+@router.post("/usuarios/{token}/")
+def busca_id(token: str):
+    return controller.user_id(token)
+
 @router.post("/usuarios/")
 def criar_usuario(usuario: UsuarioCreate):
     controller.criar_usuario(usuario)
@@ -73,10 +77,9 @@ def listar_usuario_por_email(email: str):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
 @router.post("/login/")
-def login(email: str, senha: str):
+def login(email: str, senha: str, request: Request):
     email_decoded = unquote(email)
-    resultado = controller.login(email_decoded, senha)
-    print(resultado)
+    resultado = controller.login(email_decoded, senha, request)
     if resultado[0]:
         return {"message": "Login bem-sucedido","token" : resultado[1]}
     else:

@@ -27,7 +27,7 @@ CREATE TABLE `usuarios` (
 
 ```
 
-sobre o token jwt, toda a lógica esta encapsulada no arquivo token.py dentro do diretorio controller, e para proteger uma rota adicione a dependência
+Sobre o token jwt, toda a lógica esta encapsulada no arquivo token.py dentro do diretorio controller, e para proteger uma rota adicione a dependência
 
 ```
 @router.get("/usuarios/", dependencies=[Depends(verificar_token)])
@@ -72,12 +72,13 @@ Experimente as rotas CRUD fornecidas para manipulação de usuários.
 - main.py: Arquivo principal que inicializa o aplicativo FastAPI.
 - router/routes_usuario.py: Define as rotas para manipulação de usuários.
 - controller/controller_usuario.py: Controlador que lida com as operações CRUD.
+- controller/token.py: controlador que lida com a geração e validação do token JWT.
 - database/: Pasta que contém os módulos relacionados aos bancos de dados.
 - db_mysql.py: Implementação da classe para interagir com o MySQL.
 - db_mongo.py: Implementação da classe para interagir com o MongoDB.
 - database_strategy.py: Definição da interface Strategy.
 - model/: Pasta que contém os modelos de dados Pydantic.
-- config/: Pasta que contém arquivos de configuração e utilitários.
+- config/: Pasta que contém o helper para gerenciar o Cors.
 ## Contribuindo
 Sinta-se à vontade para abrir uma issue para relatar problemas, fazer sugestões ou contribuir com código.
 

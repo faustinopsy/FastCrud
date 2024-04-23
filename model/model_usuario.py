@@ -1,7 +1,9 @@
 from pydantic import BaseModel
+from typing import Optional
+from uuid import UUID
 
 class UsuarioCreate(BaseModel):
-    id: str 
+    id: Optional[UUID] = None 
     nome: str
     senha: str
     email: str
@@ -9,3 +11,4 @@ class UsuarioCreate(BaseModel):
 class UsuarioUpdate(BaseModel):
     nome: str
     senha: str
+

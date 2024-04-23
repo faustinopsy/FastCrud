@@ -1,5 +1,6 @@
 from model.model_usuario import UsuarioCreate, UsuarioUpdate
 from database.database_strategy import Database
+import hashlib
 
 class UsuarioController:
     def __init__(self, database: Database):
@@ -19,3 +20,11 @@ class UsuarioController:
 
     def listar_usuario_por_email(self, email: str):
         return self.db.listar_usuario_por_email(email)
+    
+    def login(self, email: str, senha: str) -> bool:
+        usuario = self.listar_usuario_por_email(email)
+        if usuario:
+            senha_armazenada = usuario.get('senha')
+            senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
+            return senha_armazenada == senha_criptografada
+        return False

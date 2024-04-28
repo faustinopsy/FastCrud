@@ -3,6 +3,39 @@ Este é um exemplo de aplicação CRUD (Create, Read, Update, Delete) usando o f
 para saber mais sobre o fastAPI: https://fastapi.tiangolo.com/learn/
 um framework python muito poderoso que facilita a criação de rotas e documentação automatica de API
 
+## Branch monitoracao ***
+- nova branch (https://github.com/faustinopsy/FastCrud/tree/monitoracao)
+- nela foi adicionada um dashboard protegido com login e token jwt, mas o recurso dessa branch é a capacidade de inserir no banco toda tentativa de acesso às rotas gerando um log de uso da API, e outro recurso para monitorar é o dashboard com gráfico usando um recurso avançado chamado SSE.
+
+- SSE (Server-Sent Events) é uma tecnologia web que permite que um servidor envie automaticamente dados para um cliente assim que esses dados estiverem disponíveis, sem a necessidade de uma solicitação explícita do cliente, é uma forma de comunicação unidirecional do servidor para o cliente.
+
+O SSE foi projetado para facilitar a transmissão de dados em tempo real do servidor para o navegador, permitindo a criação de aplicativos que exibam informações dinamicamente sem fazer varias requisições para o servidor, como feeds de notícias, atualizações de status, feeds de redes sociais em tempo real, entre outros.
+
+### Principais características e usos do SSE:
+
+- Comunicação assíncrona: 
+O SSE permite que os servidores enviem dados para os clientes de forma assíncrona, o que significa que os clientes não precisam fazer solicitações repetidas para obter atualizações.
+- Padrão baseado em eventos: 
+Os dados enviados pelo servidor são organizados em eventos, cada um com um nome e opcionalmente um corpo de dados associado. O cliente pode então ouvir esses eventos e responder a eles conforme necessário.
+- Compatibilidade com navegadores: 
+SSE é suportado nativamente por todos os principais navegadores modernos, o que torna uma opção acessível para desenvolvedores web.
+- Simplicidade de implementação: 
+Comparado a outras tecnologias de comunicação em tempo real, como WebSockets, SSE é mais simples de implementar e não requer configuração adicional no servidor.
+-Baixa latência: 
+Como os dados são enviados do servidor para o cliente assim que estão disponíveis, o SSE pode fornecer atualizações em tempo real com baixa latência, tornando-o adequado para aplicativos que exigem respostas rápidas.
+- Eficiência de largura de banda: 
+SSE usa uma conexão HTTP única e mantém essa conexão aberta enquanto necessário, reduzindo a sobrecarga de conexão e tornando-o eficiente em termos de largura de banda.
+
+### Implicações e potenciais do SSE:
+
+- Aplicações em tempo real: 
+SSE é amplamente utilizado em aplicativos da web que exigem atualizações em tempo real, como feeds de notícias ao vivo, salas de bate-papo, sistemas de monitoramento em tempo real e notificações em tempo real.
+- Feedback em tempo real: 
+Podemos usar SSE para fornecer feedback instantâneo aos usuários sobre ações realizadas no aplicativo, como confirmações de envio de formulário, progresso de operações e atualizações de estado, ou atualização de dados no banco de dados.
+- Streaming de dados: 
+SSE pode ser usado para transmitir dados de forma contínua para o cliente, como transmissões de áudio e vídeo, atualizações de jogos online e dados de sensores em tempo real.
+
+
 ## Recursos
 CRUD completo para manipulação de usuários.
 Suporte para MySQL e MongoDB como bancos de dados subjacentes.

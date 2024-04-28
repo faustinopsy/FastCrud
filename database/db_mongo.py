@@ -46,6 +46,7 @@ class MongoDB(Database):
         return usuario
 
     def inserir_acesso(self, acesso_data):
+        acesso_data.id = str(uuid.uuid4())
         self.collection.insert_one(acesso_data)
 
     def listar_acessos(self) -> List[dict]:

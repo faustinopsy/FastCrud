@@ -7,7 +7,7 @@ class LogController:
     def __init__(self, database: Database):
         self.db = database
 
-    def inserir_acesso(self, acesso_data: dict):
+    def inserir_acesso(self, acesso_data: Logs):
         self.db.inserir_acesso(acesso_data)
 
     def listar_acessos(self):  

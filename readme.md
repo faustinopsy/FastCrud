@@ -58,6 +58,16 @@ CREATE TABLE `usuarios` (
   `email` varchar(45) DEFAULT NULL,
   `senha` text,
   PRIMARY KEY (`id`)
+);
+CREATE TABLE `logs` (
+  `id` char(45) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `method` varchar(10) NOT NULL,
+  `client_ip` varchar(45) NOT NULL,
+  `data_ini` datetime NOT NULL,
+  `data_fim` datetime NOT NULL,
+  `process_time` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
 )
 
 ```

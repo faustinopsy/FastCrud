@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <title>Log Viewer</title>
+</head>
+<body>
+    <canvas id="graficoMethod"></canvas>
+    <canvas id="graficoPath"></canvas>
+    <ul id="log-list" hidden></ul>
+    <div id="Total"></div>
+
+    <script>
+        let getTotal = 0;
+        let postTotal = 0;
+        let putTotal = 0;
+        let deleteTotal = 0;
+
+        const lista = document.getElementById("log-list");
+        const divsTotal = document.getElementById("Total");
+        const logDisplay = new Set();
+        const methodTotal = {};
+        const pathTotal = {};
+
+        function limparDados() {
+            getTotal = 0;
+            postTotal = 0;
+            putTotal = 0;
+            deleteTotal = 0;
+        }
+
+        function incrementaContagem(contagem, key) {
+            if (!contagem[key]) {
+                contagem[key] = 1;
+            } else {
+                contagem[key]++;
+            }
+        }
+
+        function atualizaDisplay() {
+            divsTotal.innerHTML = "<h3>Total:</h3>";
+            divsTotal.innerHTML += "<p><strong>Method Total:</strong></p>";
+            for (const [method, count] of Object.entries(methodTotal)) {
+                divsTotal.innerHTML += `<p>${method}: ${count}</p>`;
+            }
+            divsTotal.innerHTML += "<p><strong>Path Total:</strong></p>";
+            for (const [path, count] of Object.entries(pathTotal)) {
+                divsTotal.innerHTML += `<p>${path}: ${count}</p>`;
+            }
+        }
+        //teste
+        localStorage.setItem('token', 'xyz6969')
+        const token = localStorage.getItem('token')
+        const eventSourceUrl = `http://127.0.0.1:8000/logs/acessos/stream?token=${token}`;
+        const eventSource = new EventSource(eventSourceUrl);
+
+        eventSource.onmessage = function(event) {
+            const log = JSON.parse(event.data);
+            if (!logDisplay.has(log.data_ini)) {
+                const logItem = document.createElement("li");
+                logItem.textContent = `${log.id} - ${log.data_ini} - ${log.method} - ${log.path}`;
+                lista.appendChild(logItem);
+                logDisplay.add(log.data_ini);
+                incrementaContagem(methodTotal, log.method);
+                incrementaContagem(pathTotal, log.path);
+                atualizaDisplay();
+
+                switch(log.method) {
+                    case 'GET':
+                        getTotal++;
+                        break;
+                    case 'POST':
+                        postTotal++;
+                        break;
+                    case 'PUT':
+                        putTotal++;
+                        break;
+                    case 'DELETE':
+                        deleteTotal++;
+                        break;
+                    default:
+                        break;
+                }
+                atualizaGraficoMethod();
+                atualizaGraficoPath();
+                
+            }
+        };
+        function atualizaGraficoMethod() {
+            graficoMethod.data.datasets[0].data = [getTotal];
+            graficoMethod.data.datasets[1].data = [postTotal];
+            graficoMethod.data.datasets[2].data = [putTotal];
+            graficoMethod.data.datasets[3].data = [deleteTotal];
+            graficoMethod.update();
+        }
+
+        function atualizaGraficoPath() {
+            const sortedData = Object.entries(pathTotal).sort((a, b) => b[1] - a[1]);
+            const labels = sortedData.map(([path, count]) => path);
+            const data = sortedData.map(([path, count]) => count);
+
+            graficoPath.data.labels = labels;
+            graficoPath.data.datasets[0].data = data;
+            graficoPath.update();
+        }
+
+        const configMethod = {
+            type: 'bar',
+            data: {
+            labels: ['Quantidade de métodos'],
+            datasets: [{
+                label: 'GET',
+                data: [getTotal],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            },{
+                label: 'POST',
+                data: [postTotal],
+                backgroundColor: [
+                    'rgba(255, 206, 86, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'PUT',
+                data: [putTotal],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)'
+                ],
+                borderWidth: 1
+            },
+            {
+                label: 'DELETE',
+                data: [deleteTotal],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }],
+        },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+
+
+        const configPath = {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Contagem por Rota',
+                    data: [],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+       
+        let graficoMethod = new Chart(document.getElementById('graficoMethod'), configMethod);
+        let graficoPath = new Chart(document.getElementById('graficoPath'), configPath);
+    </script>
+</body>
+</html>

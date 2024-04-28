@@ -2,6 +2,8 @@ from pymongo import MongoClient
 import hashlib
 from database.database_strategy import Database
 import uuid
+from typing import List
+from datetime import datetime
 
 class MongoDB(Database):
     def __init__(self):
@@ -42,3 +44,18 @@ class MongoDB(Database):
     def listar_usuario_por_email(self, email):
         usuario = self.collection.find_one({'email': email})
         return usuario
+
+    def inserir_acesso(self, acesso_data):
+        self.collection.insert_one(acesso_data)
+
+    def listar_acessos(self) -> List[dict]:
+        return list(self.collection.find())
+
+    def consultar_acessos_por_metodo(self, method: str) -> List[dict]:
+        return list(self.collection.find({"method": method}))
+
+    def consultar_acessos_por_data(self, data_ini: datetime, data_fim: datetime) -> List[dict]:
+        return list(self.collection.find({
+            "data_ini": {"$gte": data_ini},
+            "data_fim": {"$lte": data_fim}
+        }))

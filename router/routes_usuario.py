@@ -13,8 +13,9 @@ security = HTTPBearer()
 
 router = APIRouter()
 
-#db = MySQL()
-db = MongoDB()
+db = MySQL()
+#db = MongoDB()
+
 jwt_token = Token()
 controller = UsuarioController(db)
 

@@ -4,6 +4,8 @@ from database.database_strategy import Database
 from model.model_usuario import UsuarioCreate, UsuarioUpdate
 import hashlib
 import uuid
+from typing import List
+from datetime import datetime
 
 class MySQL(Database):
     def __init__(self):
@@ -96,3 +98,43 @@ class MySQL(Database):
         result = cursor.fetchone()
         return result
         #return self.execute_query(self.connection, query, vals)
+
+    def inserir_acesso(self, acesso_data):
+        acesso_data['id']= str(uuid.uuid4())
+        query = """
+        INSERT INTO logs (id,path, client_ip, method, data_ini, data_fim, process_time) 
+        VALUES (%s,%s, %s, %s, %s, %s, %s);
+        """
+        vals = (
+            acesso_data['id'],
+            acesso_data['path'],
+            acesso_data['client_ip'],
+            acesso_data['method'],
+            acesso_data['data_ini'],
+            acesso_data['data_fim'],
+            acesso_data['process_time']
+        )
+        self.execute_query(self.connection, query, vals)
+
+    def listar_acessos(self):
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM logs;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        return result
+
+    def consultar_acessos_por_metodo(self, method: str):
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM logs WHERE method = %s;"
+        vals = (method,)
+        cursor.execute(query, vals)
+        result = cursor.fetchall()
+        return result
+
+    def consultar_acessos_por_data(self, data_ini: datetime, data_fim: datetime):
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM logs WHERE data_ini BETWEEN %s AND %s;"
+        vals = (data_ini, data_fim)
+        cursor.execute(query, vals)
+        result = cursor.fetchall()
+        return result

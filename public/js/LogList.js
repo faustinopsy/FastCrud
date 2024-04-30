@@ -14,7 +14,7 @@ class LogList {
         this.logDisplay = new Set();
         this.methodTotal = {};
         this.pathTotal = {};
-
+        this.last_log_timestamp = null
         this.token = sessionStorage.getItem('token')
         this.eventSourceUrl = `http://127.0.0.1:8000/logs/acessos/stream?token=${this.token}`;
         
@@ -24,7 +24,8 @@ class LogList {
         this.eventSource = new EventSource(this.eventSourceUrl);
         this.eventSource.onmessage = (event) => {
             const log = JSON.parse(event.data);
-            if (!this.logDisplay.has(log.data_ini)) {
+            //if (!this.logDisplay.has(log.data_ini)) {
+            if (this.last_log_timestamp === null || log.data_ini > this.last_log_timestamp) {
                 const logItem = document.createElement("li");
                 logItem.textContent = `${log.id} - ${log.data_ini} - ${log.method} - ${log.path}`;
                 this.lista.appendChild(logItem);
@@ -52,6 +53,9 @@ class LogList {
                 
                 this.methodGrafico.renderGrafico(this.getTotal, this.postTotal, this.putTotal, this.deleteTotal);
                 this.pathGrafico.renderGrafico(this.pathTotal);
+                this.last_log_timestamp = log.data_ini;
+                
+
             };
         }
 
@@ -67,6 +71,7 @@ class LogList {
         this.postTotal = 0;
         this.putTotal = 0;
         this.deleteTotal = 0;
+        this.pathTotal = {};
     }
 
     incrementaContagem(contagem, key) {

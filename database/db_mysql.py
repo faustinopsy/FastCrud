@@ -138,3 +138,11 @@ class MySQL(Database):
         cursor.execute(query, vals)
         result = cursor.fetchall()
         return result
+    
+    def consultar_por_data(self, data_ini: datetime):
+        cursor = self.connection.cursor(dictionary=True)
+        query = "SELECT * FROM logs WHERE data_ini >= %s;"
+        vals = (data_ini,)
+        cursor.execute(query, vals)
+        result = cursor.fetchall()
+        return result

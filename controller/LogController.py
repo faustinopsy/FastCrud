@@ -18,3 +18,6 @@ class LogController:
 
     def consultar_acessos_por_data(self, start_date: datetime, end_date: datetime):  
         return self.db.consultar_acessos_por_data(start_date, end_date)
+    
+    def ultimoStreem(self, data_ini: datetime):
+        return self.db.consultar_por_data(data_ini)

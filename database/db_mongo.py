@@ -49,14 +49,15 @@ class MongoDB(Database):
         acesso_data.id = str(uuid.uuid4())
         self.collection.insert_one(acesso_data)
 
-    def listar_acessos(self) -> List[dict]:
+    def listar_acessos(self):
         return list(self.collection.find())
 
-    def consultar_acessos_por_metodo(self, method: str) -> List[dict]:
-        return list(self.collection.find({"method": method}))
+    def consultar_acessos_por_metodo(self, method: str):
+        logs = self.collection.find({"method": method})
+        return logs
 
-    def consultar_acessos_por_data(self, data_ini: datetime, data_fim: datetime) -> List[dict]:
-        return list(self.collection.find({
+    def consultar_acessos_por_data(self, data_ini: datetime, data_fim: datetime):
+        return self.collection.find({
             "data_ini": {"$gte": data_ini},
             "data_fim": {"$lte": data_fim}
-        }))
+        })

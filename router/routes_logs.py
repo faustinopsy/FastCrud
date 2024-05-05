@@ -54,8 +54,6 @@ def consultar_acessos_por_data(data_ini: str, data_fim: str):
     acessos = log_controller.consultar_acessos_por_data(start_date, end_date)
     return acessos
 
-last_log_timestamp = None  
-
 @router.get("/acessos/stream", dependencies=[Depends(verificar_token)])
 async def stream_logs(response: Response):
     async def event_generator():
@@ -72,3 +70,21 @@ async def stream_logs(response: Response):
             await asyncio.sleep(10)
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+# @router.get("/acessos/stream", dependencies=[Depends(verificar_token)])
+# async def stream_logs(response: Response):
+#     last_log_timestamp = datetime.now()
+#     async def event_generator():
+#         nonlocal last_log_timestamp
+#         while True:
+#             logs = log_controller.ultimoStreem(last_log_timestamp)
+#             if logs:
+#                 last_log_timestamp = logs[-1]['data_ini']
+#                 for log in logs:
+#                     log["data_ini"] = log["data_ini"].isoformat()
+#                     log["data_fim"] = log["data_fim"].isoformat()
+#                     yield f"data: {json.dumps(log)}\n\n"
+
+#             await asyncio.sleep(10)
+
+#     return StreamingResponse(event_generator(), media_type="text/event-stream")

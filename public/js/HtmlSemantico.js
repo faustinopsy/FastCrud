@@ -1,4 +1,4 @@
-class HtmlSemantico {
+export default class HtmlSemantico {
     constructor() {
         
     }

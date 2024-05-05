@@ -1,8 +1,8 @@
 import MethodGrafico from './MethodGrafico.js'
 import PathGrafico from './PathGrafico.js'
-import LoginForm from './LoginForm.js'
-class LogList {
-    constructor() {
+
+export default class LogList {
+    constructor(url,token) {
         this.methodGrafico = new MethodGrafico();
         this.pathGrafico = new PathGrafico();
         this.getTotal = 0;
@@ -15,8 +15,7 @@ class LogList {
         this.methodTotal = {};
         this.pathTotal = {};
         this.last_log_timestamp = null
-        this.token = sessionStorage.getItem('token')
-        this.eventSourceUrl = `http://127.0.0.1:8000/logs/acessos/stream?token=${this.token}`;
+        this.eventSourceUrl =  `${url}/logs/acessos/stream?token=${token}`;
         
 
     }
@@ -95,14 +94,6 @@ class LogList {
     }
 }
 
-const logList = new LogList();
-const loginForm = new LoginForm();
-const token = sessionStorage.getItem('token');
-if (!token) {
-    loginForm.loginForm();
-} else {
-    logList.iniciar();
-    
-}
+
 
 

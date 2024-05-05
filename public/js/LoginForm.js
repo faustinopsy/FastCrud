@@ -1,6 +1,7 @@
 export default class LoginForm {
-    constructor() {
+    constructor(url) {
         this.container = document.querySelector('body');
+        this.url = url;
     }
 
     loginForm() {
@@ -40,7 +41,7 @@ export default class LoginForm {
         const senha = formData.get("senha");
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/usuarios/login/?email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`, {
+            const response = await fetch(`${this.url}/usuarios/login/?email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json'

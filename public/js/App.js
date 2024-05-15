@@ -1,6 +1,8 @@
 import LogList from './LogList.js';
 import LoginForm from './LoginForm.js'
+import RegistarSW from './RegistrarSw.js'
 
+new RegistarSW()
 const token = sessionStorage.getItem('token')
 const url = `http://127.0.0.1:8000`
 

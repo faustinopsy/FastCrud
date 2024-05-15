@@ -7,9 +7,13 @@ from database.db_mongo import MongoDB
 from urllib.parse import unquote
 from controller.token import Token
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from pydantic import BaseModel
 
 security = HTTPBearer()
 
+class LoginData(BaseModel):
+    email: str
+    senha: str
 
 router = APIRouter()
 
@@ -78,10 +82,9 @@ def listar_usuario_por_email(email: str):
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
 @router.post("/login/")
-def login(email: str, senha: str, request: Request):
-    email_decoded = unquote(email)
-    resultado = controller.login(email_decoded, senha, request)
+async def login(login_data: LoginData, request: Request):
+    resultado = controller.login(login_data.email, login_data.senha, request)
     if resultado[0]:
-        return {"message": "Login bem-sucedido","token" : resultado[1]}
+        return {"message": "Login bem-sucedido", "token": resultado[1]}
     else:
         raise HTTPException(status_code=401, detail="Credenciais inválidas")

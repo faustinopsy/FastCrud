@@ -39,13 +39,15 @@ export default class LoginForm {
         const formData = new FormData(event.target);
         const email = formData.get("email");
         const senha = formData.get("senha");
-
+    
         try {
-            const response = await fetch(`${this.url}/usuarios/login/?email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`, {
+            const response = await fetch(`${this.url}/usuarios/login`, {
                 method: 'POST',
                 headers: {
-                    'Accept': 'application/json'
-                }
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, senha })
             });
             const data = await response.json();
             if (response.ok) {

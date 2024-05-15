@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'none';
+        script-src 'self';
+        img-src 'self' data:;
+        style-src 'self' 'unsafe-inline';
+        font-src 'self';
+        connect-src 'self' http://127.0.0.1:8000;
+        worker-src 'self';
+        manifest-src 'self'; 
+        child-src 'none';
+        upgrade-insecure-requests;
+        ">
+
     <title>Log dashboard</title>
 </head>
 <body>

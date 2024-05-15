@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IndexedDB</title>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+          const dbName = 'ExemploDB';
+          const storeName = 'items';
+          let db;
+
+          function abrirBanco() {
+              return new Promise((resolve, reject) => {
+                  const request = indexedDB.open(dbName, 1);
+
+                  request.onerror = (event) => {
+                      console.error('Erro no banco:', event.target.error);
+                      reject(event.target.error);
+                  };
+
+                  request.onsuccess = (event) => {
+                      db = event.target.result;
+                      console.log('Banco aberto');
+                      resolve(db);
+                  };
+
+                  request.onupgradeneeded = (event) => {
+                      let db = event.target.result;
+                      if (!db.objectStoreNames.contains(storeName)) {
+                          db.createObjectStore(storeName, { keyPath: 'id', autoIncrement: true });
+                          console.log('Object store criado');
+                      }
+                  };
+              });
+          }
+
+          function adicionarAtualizar(data) {
+              return abrirBanco().then(db => {
+                  return new Promise((resolve, reject) => {
+                      const transaction = db.transaction([storeName], 'readwrite');
+                      const store = transaction.objectStore(storeName);
+                      const request = store.put(data);
+
+                      request.onsuccess = () => {
+                          console.log('Dados adicionados/atualizados');
+                          resolve();
+                      };
+
+                      request.onerror = (event) => {
+                          console.error('Erro ao adicionar/atualizar dados:', event.target.error);
+                          reject(event.target.error);
+                      };
+                  });
+              });
+          }
+
+          function buscarDados(id) {
+              return abrirBanco().then(db => {
+                  return new Promise((resolve, reject) => {
+                      const transaction = db.transaction([storeName], 'readonly');
+                      const store = transaction.objectStore(storeName);
+                      const request = store.get(id);
+
+                      request.onsuccess = () => {
+                          console.log('Dados recuperados:', request.result);
+                          resolve(request.result);
+                      };
+
+                      request.onerror = (event) => {
+                          console.error('Erro ao recuperar dados:', event.target.error);
+                          reject(event.target.error);
+                      };
+                  });
+              });
+          }
+
+          document.getElementById('adicionarAtualizar').addEventListener('click', () => {
+              const idValue = document.getElementById('idInput').value.trim();
+              const data = {
+                  name: document.getElementById('nome').value
+              };
+              if (idValue) {
+                  data.id = Number(idValue); 
+              }
+              adicionarAtualizar(data);
+          });
+
+          document.getElementById('buscar').addEventListener('click', () => {
+              const id = parseInt(document.getElementById('idInput').value, 10);
+              buscarDados(id).then(data => {
+                  document.getElementById('saida').textContent = JSON.stringify(data, null, 2);
+              });
+          });
+      });
+    </script>
+</head>
+<body>
+    <h1>Exemplo de uso</h1>
+    <input type="text" id="nome" placeholder="Insira um nome"><br>
+    <input type="number" id="idInput" placeholder="ID (para atualização)">
+    <button id="adicionarAtualizar">Adicionar/Atualizar</button><br><br>
+    <button id="buscar">Buscar dados</button>
+    <pre id="saida"></pre>
+</body>
+</html>

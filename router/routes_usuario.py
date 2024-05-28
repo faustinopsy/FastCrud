@@ -13,8 +13,8 @@ security = HTTPBearer()
 
 router = APIRouter()
 
-#db = MySQL()
-db = MongoDB()
+db = MySQL()
+#db = MongoDB()
 jwt_token = Token()
 controller = UsuarioController(db)
 
@@ -80,4 +80,5 @@ def login(email: str, senha: str):
     if resultado[0]:
         return {"message": "Login bem-sucedido","token" : resultado[1]}
     else:
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+        return {"status_code": 401,"detail" : "Credenciais inválidas"}
+        #raise HTTPException(status_code=401, detail="Credenciais inválidas")

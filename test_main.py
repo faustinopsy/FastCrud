@@ -24,7 +24,7 @@ def test_verificar_token_invalido():
     assert response.json() == {"detail": "Token inválido"}
 
 def test_criar_usuario():
-    usuario = {"nome": "Teste", "email": "teste@example.com", "senha": "senha123"}
+    usuario = {"nome": "teste@123", "email": "teste@123", "senha": "teste@123"}
     response = client.post("/usuarios/usuarios/", json=usuario)
     assert response.status_code == 200
     assert response.json() == {"message": "Usuário criado com sucesso"}
@@ -38,15 +38,15 @@ def test_listar_usuarios():
 
 
 def test_editar_usuario():
-    email = "rodrigoxxx@123"  
-    usuario = {"nome": "Teste Atualizado", "senha": "rodrigoxxx@123"}
+    email = "teste@123"  
+    usuario = {"nome": "Teste Atualizado", "senha": "teste@123"}
     response = client.put(f"/usuarios/usuarios/{email}/", json=usuario)
     assert response.status_code == 200
     assert response.json() == {"message": "Usuário atualizado com sucesso"}
 
 
 def test_excluir_usuario():
-    email = "rodrigoxxx@123" 
+    email = "teste@123" 
     response = client.delete(f"/usuarios/usuarios/{email}/")
     assert response.status_code == 200
     assert response.json() == {"message": "Usuário excluído com sucesso"}

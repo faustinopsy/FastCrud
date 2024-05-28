@@ -26,7 +26,7 @@ def verificar_token(token: str):
         exp = payload.get('exp')
         if exp:
             exp_date = datetime.fromtimestamp(exp)
-            if exp_date > datetime.utcnow():
+            if exp_date > datetime.now():
                 return {"message": "Token válido"}
             else:
                 raise HTTPException(status_code=401, detail="Token expirado")

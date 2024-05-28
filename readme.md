@@ -37,6 +37,19 @@ Acesse a documentação interativa do Swagger em:
 ```
 http://localhost:8000/docs
 ```
+Uso com MySQL
+
+```
+CREATE TABLE `usuarios` (
+  `id` varchar(50) NOT NULL,
+  `nome` varchar(45) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL,
+  `senha` text,
+  PRIMARY KEY (`id`)
+) ;
+
+
+```
 Experimente as rotas CRUD fornecidas para manipulação de usuários.
 ## Estrutura do Projeto
 - main.py: Arquivo principal que inicializa o aplicativo FastAPI.

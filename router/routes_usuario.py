@@ -76,9 +76,11 @@ def listar_usuario_por_email(email: str):
 def login(email: str, senha: str):
     email_decoded = unquote(email)
     resultado = controller.login(email_decoded, senha)
-    print(resultado)
+    #print(resultado)
     if resultado[0]:
-        return {"message": "Login bem-sucedido","token" : resultado[1]}
+        return {"status_code": 200,"message": "Login bem-sucedido","token" : resultado[1]}
     else:
         return {"status_code": 401,"detail" : "Credenciais inválidas"}
         #raise HTTPException(status_code=401, detail="Credenciais inválidas")
+
+    

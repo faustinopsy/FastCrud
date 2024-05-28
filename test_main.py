@@ -12,7 +12,7 @@ def test_verificar_token_valido():
     assert response.json() == {"message": "Token válido"}
 
 def test_verificar_token_expirado():
-    token = "token_expirado_aqui"  
+    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvZHJpZ29AMTIzIiwiZXhwIjoxNzE3MDIxMTgyfQ.ohp51FchAKRhlHxXKtudZJyBxF77NHyZvNeEw7WOI3A"  
     response = client.get(f"/usuarios/verificar-token/?token={token}")
     assert response.status_code == 401
     assert response.json() == {"detail": "Token expirado"}
@@ -31,29 +31,29 @@ def test_criar_usuario():
 
 def test_listar_usuarios():
     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJvZHJpZ29AMTIzIiwiZXhwIjoxNzE3MDIxMTgyfQ.ohp51FchAKRhlHxXKtudZJyBxF77NHyZvNeEw7WOI3A" 
-    headers = {"Authorization": f"Bearer {token}"}
-    response = client.get("/usuarios/usuarios/", headers=headers)
+    headers = {"token": f"{token}"}
+    response = client.get(f"/usuarios/usuarios/?token={token}")
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 
 def test_editar_usuario():
-    email = "rodrigo@123"  
-    usuario = {"nome": "Teste Atualizado", "senha": "nova_senha123"}
+    email = "rodrigoxxx@123"  
+    usuario = {"nome": "Teste Atualizado", "senha": "rodrigoxxx@123"}
     response = client.put(f"/usuarios/usuarios/{email}/", json=usuario)
     assert response.status_code == 200
     assert response.json() == {"message": "Usuário atualizado com sucesso"}
 
 
 def test_excluir_usuario():
-    email = "rodrigo@123" 
+    email = "rodrigoxxx@123" 
     response = client.delete(f"/usuarios/usuarios/{email}/")
     assert response.status_code == 200
     assert response.json() == {"message": "Usuário excluído com sucesso"}
 
 
 def test_listar_usuario_por_email():
-    email = "rodrigo@123"  
+    email = "rodrigoxxx@123"  
     response = client.get(f"/usuarios/usuarios/{email}/")
     if response.status_code == 200:
         assert "email" in response.json()
@@ -63,8 +63,8 @@ def test_listar_usuario_por_email():
 
 
 def test_login():
-    email = "rodrigo@123"  
-    senha = "rodrigo@123"
+    email = "rodrigoxxx@123"  
+    senha = "rodrigoxxx@123"
     response = client.post(f"/usuarios/login/?email={email}&senha={senha}")
     if response.status_code == 200:
         assert "token" in response.json()

@@ -2,7 +2,7 @@ from database.db_mysql import create_server_connection, execute_query
 from model.model_item import Item
 import uuid
 
-connection = create_server_connection("localhost", "root", "root123", "fastcrud")
+connection = create_server_connection("localhost", "root", "", "fastcrud")
 
 def create_item(item: Item):
     item.id = str(uuid.uuid4())

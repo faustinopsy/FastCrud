@@ -49,13 +49,13 @@ def criar_usuario(usuario: UsuarioCreate):
 def listar_usuarios():
     return controller.listar_usuarios()
 
-@router.put("/usuarios/{email}/")
+@router.put("/usuarios/{email}/" , dependencies=[Depends(verificar_token)])
 def editar_usuario(email: str, usuario: UsuarioUpdate):
     email_decoded = unquote(email)
     controller.editar_usuario_por_email(email_decoded, usuario)
     return {"message": "Usuário atualizado com sucesso"}
 
-@router.delete("/usuarios/{email}/")
+@router.delete("/usuarios/{email}/" , dependencies=[Depends(verificar_token)])
 def excluir_usuario(email: str):
     email_decoded = unquote(email)
     controller.excluir_usuario_por_email(email_decoded)

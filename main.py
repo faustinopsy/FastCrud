@@ -6,7 +6,7 @@ app = FastAPI()
 app = FastAPI(debug=True)
 add_cors(app)
 
-app.include_router(usuario_router, prefix="/usuarios", tags=["usuarios"])
+app.include_router(usuario_router, tags=["usuarios"])
 
 if __name__ == "__main__":
     import uvicorn

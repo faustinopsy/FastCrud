@@ -2,6 +2,7 @@ export default class UpdateUserForm {
     constructor(fetchService, renderCallback) {
         this.fetchService = fetchService;
         this.renderApp = renderCallback;
+        this.token = ""
     }
 
     render() {
@@ -9,13 +10,13 @@ export default class UpdateUserForm {
         <div id="updateUserModal" class="modal">
         <div class="modal-content"><div class="close"> X </div>
             <h4>Atualizar Usuário</h4>
-            <div class="input-field">
+            <div class="input-field" hidden>
                 <label for="updateId">ID para atualizar</label>
                 <input type="text" id="updateId" class="validate">
             </div>
             <div class="input-field">
-                <label for="updateName">Nome</label>
-                <input type="text" id="updateName" class="validate">
+                <label for="updateNome">Nome</label>
+                <input type="text" id="updateNome" class="validate">
             </div>
             <div class="input-field">
                 <label for="updateEmail">Email</label>
@@ -39,19 +40,23 @@ export default class UpdateUserForm {
     }
 
     afterRender() {
+        this.token = localStorage.getItem("token") || "";
         document.getElementById('updateButton').addEventListener('click', () => this.updateUser());
         document.querySelector('.close').addEventListener('click', () => this.closeModal());
     }
 
     async updateUser() {
         const id = document.getElementById('updateId').value;
-        const nome = document.getElementById('updateName').value;
+        const nome = document.getElementById('updateSenha').value;
         const email = document.getElementById('updateEmail').value;
         const senha = document.getElementById('updateSenha').value;
-
-        await this.fetchService.fetch(`/usuarios/${id}`, {
+        const token = localStorage.getItem("token");
+        await this.fetchService.fetch(`/usuarios/${email}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ nome, email, senha }),
         });
 
@@ -59,10 +64,13 @@ export default class UpdateUserForm {
         this.renderApp();
     }
 
-    async deleteUser(id) {
-        await this.fetchService.fetch(`/usuarios/${id}`, {
+    async deleteUser(email) {
+        await this.fetchService.fetch(`/usuarios/${email}`, {
             method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.token}` 
+            },
         });
 
         alert('Usuário deletado com sucesso.');

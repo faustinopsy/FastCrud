@@ -28,12 +28,13 @@ export default class UserForm {
             alert('Campos vazios');
             return;
         }
-        await this.fetchService.fetch('/usuarios/', {
+        const resultado = await this.fetchService.fetch('/usuarios/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json' 
+            },
             body: JSON.stringify({ nome, email, senha }),
         });
-
         alert('Usuário adicionado com sucesso.');
         this.renderApp('usersList', this.render);
     }

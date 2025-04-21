@@ -12,3 +12,6 @@ class UsuarioUpdate(BaseModel):
     nome: str
     senha: str
 
+class CredenciaisLogin(BaseModel):
+    email: str
+    senha: str

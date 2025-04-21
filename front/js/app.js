@@ -1,26 +1,55 @@
-import FetchService  from './components/FetchService.js';
+import FetchService from './components/FetchService.js';
 import UserForm from './components/UserForm.js';
-import UpdateUserForm  from './components/UpdateUserForm.js';
+import UpdateUserForm from './components/UpdateUserForm.js';
+import LoginForm from './components/LoginForm.js';
 
 class App {
     constructor(apiBaseUrl) {
         this.apiBaseUrl = apiBaseUrl;
         this.appElement = document.getElementById('app');
         this.fetchService = new FetchService(this.apiBaseUrl);
+        this.token = ""
         this.initApp();
     }
 
     initApp() {
+        this.token = localStorage.getItem("token") || "";
+        window.addEventListener('hashchange', () => this.renderBasedOnHash());
+        this.renderBasedOnHash();
+    }
+
+    renderBasedOnHash() {
+        const hash = location.hash;
+        if (hash === '#login') {
+            this.renderLogin();
+        } else {
+            this.renderUserManagement();
+        }
+    }
+
+    renderLogin() {
+        this.appElement.innerHTML = `
+            <div class="panel">
+                <h1>Login</h1>
+                <div id="loginForm"></div>
+            </div>
+        `;
+        this.loginForm = new LoginForm(this.fetchService);
+        this.render('loginForm', this.loginForm.render());
+        this.loginForm.afterRender();
+    }
+
+    renderUserManagement() {
         this.userForm = new UserForm(this.fetchService, () => this.fetchUsers());
         this.updateUserForm = new UpdateUserForm(this.fetchService, () => this.fetchUsers());
         this.appElement.innerHTML = `
-        <div class="panel">
-            <h1>Gerenciador de Usuários</h1>
-            <div id="userForm"></div>
-            <button id="fetchUsersButton">Buscar Todos os Usuários</button>
-            <div id="usersList"></div>
-            <div id="updateUserForm"></div>
-        </div>
+            <div class="panel">
+                <h1>Gerenciador de Usuários</h1>
+                <div id="userForm"></div>
+                <button id="fetchUsersButton">Buscar Todos os Usuários</button>
+                <div id="usersList"></div>
+                <div id="updateUserForm"></div>
+            </div>
         `;
 
         this.render('userForm', this.userForm.render());
@@ -31,33 +60,64 @@ class App {
     }
 
     async fetchUsers() {
-        const response = await fetch(`${this.apiBaseUrl}/usuarios/`);
-        const users = await response.json();
-        let usersHtml = '<h2>Usuários Disponíveis</h2><div class="panel">';
-        users.forEach((user) => {
-            usersHtml += `<div class="user" data-id="${user.id}">
-                ${user.id} - ${user.name} - ${user.email}
-                <button class="delete-button" data-id="${user.id}">Deletar</button></div>`;
+        const response = await this.fetchService.fetch(`/usuarios`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.token}`
+            }
         });
-        usersHtml += '</div>';
+        const users = response;
+        let usersHtml = `<h2>Usuários Disponíveis</h2>
+                         <table>
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">ID</th>
+                                    <th style="text-align: center;">Nome</th>
+                                    <th style="text-align: center;">Email</th>
+                                    <th style="text-align: center;">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>`;
+
+        users.forEach((user) => {
+            usersHtml += `<tr data-id="${user.id}">
+                            <td>${user.id}</td>
+                            <td>${user.nome}</td>
+                            <td>${user.email}</td>
+                            <td style="text-align: center;">
+                                <button class="delete-button" data-id="${user.id}">Deletar</button>
+                            </td>
+                          </tr>`;
+        });
+
+        usersHtml += `   </tbody>
+                         </table>`;
         this.render('usersList', usersHtml);
 
         users.forEach((user) => {
-            document.querySelector(`.delete-button[data-id='${user.id}']`).addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.updateUserForm.deleteUser(user.id);
-            });
-            document.querySelector(`.user[data-id='${user.id}']`).addEventListener('click', () => {
-                this.openUpdateModal(user);
-            });
+            const deleteButton = document.querySelector(`.delete-button[data-id='${user.id}']`);
+            if (deleteButton) {
+                 deleteButton.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.updateUserForm.deleteUser(user.email);
+                 });
+            }
+
+            const userRow = document.querySelector(`tr[data-id='${user.id}']`);
+             if (userRow) {
+                 userRow.addEventListener('click', () => {
+                    this.openUpdateModal(user);
+                 });
+             }
         });
     }
 
     fillUpdateForm(user) {
         document.getElementById('updateId').value = user.id;
-        document.getElementById('updateName').value = user.name;
+        document.getElementById('updateNome').value = user.nome;
         document.getElementById('updateEmail').value = user.email;
-        document.getElementById('updatePassword').value = '';
+        document.getElementById('updateSenha').value = '';
     }
 
     openUpdateModal(user) {

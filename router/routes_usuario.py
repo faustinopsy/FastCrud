@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException,Depends, status
 from model.model_usuario import UsuarioCreate, UsuarioUpdate
 from controller.controller_usuario import UsuarioController
 from datetime import datetime
+from database.db_sqlite import SQLite
 from database.db_mysql import MySQL
 from database.db_mongo import MongoDB
 from urllib.parse import unquote
@@ -14,7 +15,8 @@ security = HTTPBearer()
 router = APIRouter()
 
 #db = MySQL()
-db = MongoDB()
+db = SQLite()
+#db = MongoDB()
 jwt_token = Token()
 controller = UsuarioController(db)
 
@@ -67,7 +69,8 @@ def listar_usuario_por_email(email: str):
         if isinstance(db, MySQL): 
             return usuario
         else:
-            usuario['_id'] = str(usuario['_id'])
+            if '_id' in usuario:
+                usuario['_id'] = str(usuario['_id'])
             return usuario
     else:
         raise HTTPException(status_code=404, detail="Usuário não encontrado")

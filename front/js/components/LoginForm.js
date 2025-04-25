@@ -37,6 +37,7 @@ export default class LoginForm {
             if (response) {
                 localStorage.setItem('token', response.token);
                 alert('Login realizado com sucesso!');
+                location.hash = '#'
             } else {
                 alert('Erro no login: ' + (response.message || 'Credenciais inválidas'));
             }

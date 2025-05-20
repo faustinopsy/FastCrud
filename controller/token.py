@@ -2,6 +2,11 @@ from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import jwt
 from datetime import datetime, timedelta
+from datetime import datetime
+import hashlib
+from fastapi.security import HTTPBearer
+
+security = HTTPBearer()
 
 class Token:
     def __init__(self):
@@ -25,3 +30,26 @@ class Token:
         }
         jwt_token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
         return jwt_token
+    
+    async def get_current_user(self, credentials: HTTPAuthorizationCredentials = Depends(security)):
+        token = credentials.credentials
+        try:
+            payload = self.verificar_token(token)
+            exp = payload.get('exp')
+            if exp and datetime.fromtimestamp(exp) < datetime.utcnow():
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Token expirado",
+                    headers={"WWW-Authenticate": "Bearer"},
+                )
+            
+            return payload
+        except HTTPException as e:
+            raise e
+        except Exception as e:
+            print(f"Erro inesperado ao verificar token: {e}") 
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Erro interno ao processar autenticação",
+                headers={"WWW-Authenticate": "Bearer"},
+            )

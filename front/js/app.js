@@ -9,19 +9,25 @@ class App {
         this.appElement = document.getElementById('app');
         this.fetchService = new FetchService(this.apiBaseUrl);
         this.token = ""
-        this.initApp();
         this.admin = false;
     }
 
    async initApp() {
         this.token = localStorage.getItem("token") || "";
+        if (!this.token) {
+            location.hash = '#login';
+            this.verificaRota()
+            return;
+        }
         this.currentDecodedStudent = await decodeJwtPayload(this.token);
         this.admin = this.currentDecodedStudent.tipo_usuario === "admin";
-        console.log(this.admin);
+        this.verificaRota()
+    }
+
+    verificaRota(){
         window.addEventListener('hashchange', () => this.renderBasedOnHash());
         this.renderBasedOnHash();
     }
-
     renderBasedOnHash() {
         const hash = location.hash;
         if (hash === '#login') {
@@ -146,3 +152,4 @@ class App {
 
 const apiBaseUrl = 'http://127.0.0.1:8000';
 const userManager = new App(apiBaseUrl);
+await userManager.initApp();

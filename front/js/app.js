@@ -2,7 +2,7 @@ import FetchService from './components/FetchService.js';
 import UserForm from './components/UserForm.js';
 import UpdateUserForm from './components/UpdateUserForm.js';
 import LoginForm from './components/LoginForm.js';
-
+import { decodeJwtPayload } from './utils/jwtUtils.js';
 class App {
     constructor(apiBaseUrl) {
         this.apiBaseUrl = apiBaseUrl;
@@ -10,10 +10,14 @@ class App {
         this.fetchService = new FetchService(this.apiBaseUrl);
         this.token = ""
         this.initApp();
+        this.admin = false;
     }
 
-    initApp() {
+   async initApp() {
         this.token = localStorage.getItem("token") || "";
+        this.currentDecodedStudent = await decodeJwtPayload(this.token);
+        this.admin = this.currentDecodedStudent.tipo_usuario === "admin";
+        console.log(this.admin);
         window.addEventListener('hashchange', () => this.renderBasedOnHash());
         this.renderBasedOnHash();
     }
@@ -85,10 +89,12 @@ class App {
                             <td>${user.id}</td>
                             <td>${user.nome}</td>
                             <td>${user.email}</td>
-                            <td style="text-align: center;">
-                                <button class="delete-button" data-id="${user.id}">Deletar</button>
+                            <td style="text-align: center;">`;
+            if (this.admin) {
+                usersHtml += `<button class="delete-button" data-id="${user.id}">Deletar</button>
                             </td>
                           </tr>`;
+            }
         });
 
         usersHtml += `   </tbody>

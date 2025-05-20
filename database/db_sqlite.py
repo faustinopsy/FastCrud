@@ -7,6 +7,7 @@ import uuid
 class SQLite(Database):
     def __init__(self):
         self.db_path = "./usuarios.db"
+        self.criar_tabela_usuarios()
 
     def get_connection(self):
         connection = sqlite3.connect(self.db_path, check_same_thread=False)
@@ -65,10 +66,10 @@ class SQLite(Database):
         usuario_data.id = str(uuid.uuid4())
         senha_criptografada = self.criptografar_senha(usuario_data.senha)
         query = """
-        INSERT INTO usuarios (id, nome, senha, email) 
-        VALUES (?, ?, ?, ?);
+        INSERT INTO usuarios (id, nome, senha, email, tipo_usuario) 
+        VALUES (?, ?, ?, ?, ?);
         """
-        vals = (usuario_data.id, usuario_data.nome, senha_criptografada, usuario_data.email)
+        vals = (usuario_data.id, usuario_data.nome, senha_criptografada, usuario_data.email, usuario_data.tipo_usuario)
         self.execute_query(query, vals)
         return usuario_data
 
@@ -83,10 +84,10 @@ class SQLite(Database):
         senha_criptografada = self.criptografar_senha(usuario_data.senha)
         query = """
         UPDATE usuarios 
-        SET nome = ?, senha = ?
+        SET nome = ?, senha = ?, , tipo_usuario = ?
         WHERE email = ?;
         """
-        vals = (usuario_data.nome, senha_criptografada, email)
+        vals = (usuario_data.nome, senha_criptografada, usuario_data.tipo_usuario, email)
         self.execute_query(query, vals)
 
     def excluir_usuario_por_email(self, email: str):
@@ -99,3 +100,23 @@ class SQLite(Database):
         vals = (email,)
         result = self.fetch_one_query(query, vals)
         return dict(result) if result else None
+
+    def criar_tabela_usuarios(self):
+        conn = self.get_connection()
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS usuarios (
+                    id TEXT PRIMARY KEY,
+                    nome TEXT NOT NULL,
+                    senha TEXT NOT NULL,
+                    email TEXT NOT NULL UNIQUE,
+                    tipo_usuario TEXT NOT NULL
+                );
+            """)
+            conn.commit()
+            print("Tabela 'usuarios' criada com sucesso.")
+        except sqlite3.Error as err:
+            print(f"Erro SQLite: {err}")
+        finally:
+            conn.close()

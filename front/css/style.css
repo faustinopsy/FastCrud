@@ -60,7 +60,7 @@ body.modal-open {
     cursor: pointer;
 }
 
-input[type=text],[type=email],[type=password] {
+input[type=text],[type=email],[type=password], select {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;

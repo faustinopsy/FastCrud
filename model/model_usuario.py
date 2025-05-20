@@ -7,10 +7,12 @@ class UsuarioCreate(BaseModel):
     nome: str
     senha: str
     email: str
+    tipo_usuario: str
 
 class UsuarioUpdate(BaseModel):
     nome: str
     senha: str
+    tipo_usuario: str
 
 class CredenciaisLogin(BaseModel):
     email: str

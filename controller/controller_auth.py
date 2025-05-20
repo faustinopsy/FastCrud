@@ -26,11 +26,12 @@ class UsuarioAuth:
             raise HTTPException(status_code=401, detail="Credenciais inválidas.")
 
         senha_armazenada = usuario.get('senha')
+        tipo_usuario = usuario.get('tipo_usuario')
         senha_criptografada = hashlib.sha256(senha.encode()).hexdigest()
 
         if senha_armazenada == senha_criptografada:
             jwt_token = Token()
-            jwt = jwt_token.gerar_token(email)
+            jwt = jwt_token.gerar_token(email,tipo_usuario)
             return [True, jwt]
         
         raise HTTPException(status_code=401, detail="Credenciais inválidas.")

@@ -22,10 +22,13 @@ class Token:
         except jwt.InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
 
-    def gerar_token(self, email: str) -> str:
+    def gerar_token(self, email: str, tipo_usuario: str) -> str:
         payload = {
             'email': email,
-            'exp': datetime.utcnow() + timedelta(days=1) 
+            'tipo_usuario': tipo_usuario,
+            'iat': datetime.utcnow(), 
+            'exp': datetime.utcnow() + timedelta(days=1)
+
         }
         jwt_token = jwt.encode(payload, self.secret_key, algorithm=self.algorithm)
         return jwt_token

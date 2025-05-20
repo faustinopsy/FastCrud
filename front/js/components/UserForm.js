@@ -6,12 +6,20 @@ export default class UserForm {
 
     render() {
         return `
-            <form id="addUserForm">
-                Nome: <input type="text" id="nome"><br>
-                Email: <input type="email" id="email"><br>
-                Senha: <input type="password" id="senha"><br>
-                <button type="submit">Adicionar Usuário</button>
-            </form>
+             <form id="addUserForm">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome">
+            <label for="email">Email:</label>
+            <input type="email" id="email">
+            <label for="tipo">Tipo:</label>
+           <select name="tipo" id="tipo">
+            <option value="admin">Admin</option>
+            <option value="user">User</option>
+        </select>
+        <label for="senha">Senha:</label>
+        <input type="password" id="senha">
+        <button type="submit">Adicionar Usuário</button>
+    </form>
         `;
     }
 
@@ -24,6 +32,7 @@ export default class UserForm {
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
+        const tipo_usuario = document.getElementById('tipo').value;
         if (!nome || !email || !senha) {
             alert('Campos vazios');
             return;
@@ -33,7 +42,7 @@ export default class UserForm {
             headers: { 
                 'Content-Type': 'application/json' 
             },
-            body: JSON.stringify({ nome, email, senha }),
+            body: JSON.stringify({ nome, email, senha,tipo_usuario }),
         });
         alert('Usuário adicionado com sucesso.');
         this.renderApp('usersList', this.render);

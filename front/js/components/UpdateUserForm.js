@@ -23,6 +23,12 @@ export default class UpdateUserForm {
                 <input type="email" id="updateEmail" class="validate">
             </div>
             <div class="input-field">
+              <select name="tipo" id="tipo">
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+            </select>
+            </div>
+            <div class="input-field">
                 <label for="updateSenha">Senha</label>
                 <input type="password" id="updateSenha" class="validate">
             </div>
@@ -50,6 +56,7 @@ export default class UpdateUserForm {
         const nome = document.getElementById('updateSenha').value;
         const email = document.getElementById('updateEmail').value;
         const senha = document.getElementById('updateSenha').value;
+        const tipo_usuario = document.getElementById('tipo').value;
         const token = localStorage.getItem("token");
         await this.fetchService.fetch(`/usuarios/${email}`, {
             method: 'PUT',
@@ -57,7 +64,7 @@ export default class UpdateUserForm {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ nome, email, senha }),
+            body: JSON.stringify({ nome, email, senha, tipo_usuario }),
         });
 
         alert('Usuário atualizado com sucesso.');
